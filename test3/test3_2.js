@@ -10,14 +10,14 @@
  */
 const myName = '石井亮佑';
 function main() {
-    hello();
-    goodBye();
+  hello();
+  goodBye();
 }
 
 function hello() {
-    console.log(`${myName}さん、こんにちは！`);
+  console.log(`${myName}さん、こんにちは！`);
 }
 
 function goodBye() {
-    console.log(`${myName}さん、こんばんは！`);
+  console.log(`${myName}さん、こんばんは！`);
 }

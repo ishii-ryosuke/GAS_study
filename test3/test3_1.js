@@ -5,9 +5,9 @@
  * ・仮引数の値を10倍にして呼び出し元に返してください。
  */
 function main() {
-    console.log(tenTimeMethod(1));
+  console.log(tenTimeMethod(1));
 }
 
 function tenTimeMethod(value) {
-    return value * 10;
+  return value * 10;
 }
