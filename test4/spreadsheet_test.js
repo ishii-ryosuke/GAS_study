@@ -1,0 +1,68 @@
+/**
+ * [SpreadSheet課題]
+ * 1. スプレッドシートの初期表示時にメニューが表示されるようにしましょう。
+ * 
+ * 2. 表示されたメニュー内の「状況分析」をクリックすると
+ * 　「状況分析_template」シートをコピーし、シート名を「状況整理_YYYYMMDDHHmmSS」の形式で設定してください。
+ * 　※YYYY:年、MM:月、DD:日、HH:時、mm：分、SS：秒
+ * 
+ * 　タスク一覧から以下のタスクを抽出してコピーしたシートに出力してください。
+ * 　・仕掛中のタスク：タスク一覧のうち、ステータスが「仕掛中」となっている行データのみを抽出してください。
+ * 　・未着手のタスク：タスク一覧のうち、ステータスが「未着手」となっている行データのみを抽出してください。
+ * 　・期限が過ぎているタスク：タスク一覧のうち、期限日が本日日付よりも古い日付の場合はその行データを抽出してください。
+ */
+function onOpen(e) {
+  SpreadsheetApp.getUi()
+    .createMenu('GASメニュー')
+    .addItem('状況分析', 'menuSituationalAnalysis')
+    .addToUi();
+}
+
+function menuSituationalAnalysis() {
+  let mySpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  let templateSheet = mySpreadsheet.getSheetByName('状況分析_template');
+  let copySheet = templateSheet.copyTo(mySpreadsheet);
+
+  let today = new Date();
+  copySheet.setName(`状況整理_${dateToStr24HPad0(today)}`);
+
+  let taskSheet = mySpreadsheet.getSheetByName('タスク一覧');
+  let taskValues = taskSheet.getDataRange().getValues();
+  
+  let taskDate = 0;
+  
+  let expiredFlag = 0;
+  let completeFlag = 0;
+  let notStartFlag = 0;
+  for (let i = 1; i < taskValues.length; i++) {
+    taskDate = new Date(taskValues[i][3]);
+    if (taskDate.getTime() < today.getTime()) {
+      copySheet.getRange(`A${9 + (i - 1)}:D${9 + (i - 1)}`).setValues([taskValues[i]]);
+      expiredFlag++;
+      continue;
+    }
+    if (taskValues[i][2] == '完了') {
+      completeFlag++;
+    }
+    if (taskValues[i][2] == '未着手') {
+      copySheet.getRange(`A${6 + (i - 1) - expiredFlag - completeFlag}:D${6 + (i - 1) - expiredFlag - completeFlag}`).setValues([taskValues[i]]);
+      copySheet.insertRowAfter(6 + (i - 1) - expiredFlag - completeFlag);
+      notStartFlag++
+    }
+    if (taskValues[i][2] == '仕掛中') {
+      copySheet.getRange(`A${3 + (i - 1) - expiredFlag - completeFlag - notStartFlag}:D${3 + (i - 1) - expiredFlag - completeFlag - notStartFlag}`).setValues([taskValues[i]]);
+      copySheet.insertRowAfter(3 + (i - 1) - expiredFlag - completeFlag - notStartFlag);
+    }
+  }
+}
+
+function dateToStr24HPad0(date) {
+  let str = date.getFullYear()
+    + ('0' + (date.getMonth() + 1)).slice(-2)
+    + ('0' + date.getDate()).slice(-2)
+    + ('0' + date.getHours()).slice(-2)
+    + ('0' + date.getMinutes()).slice(-2)
+    + ('0' + date.getSeconds()).slice(-2);
+  
+  return str;
+}
