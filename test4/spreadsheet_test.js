@@ -48,7 +48,8 @@ function taskAdjustment(situationArrangementSheet, taskValues) {
     let taskDate = 0;
     taskDate = new Date(taskValues[i][3]);
     if (taskDate.getTime() < new Date().getTime()) {
-      situationArrangementSheet.getRange(`A${9 + (i - 1)}:D${9 + (i - 1)}`).setValues([taskValues[i]]);
+      let expiredTaskPosition = 9 + (i - 1);
+      situationArrangementSheet.getRange(`A${expiredTaskPosition}:D${expiredTaskPosition}`).setValues([taskValues[i]]);
       expiredCount++;
       continue;
     }
@@ -56,13 +57,15 @@ function taskAdjustment(situationArrangementSheet, taskValues) {
       completeCount++;
     }
     if (taskValues[i][2] == '未着手') {
-      situationArrangementSheet.getRange(`A${6 + (i - 1) - expiredCount - completeCount}:D${6 + (i - 1) - expiredCount - completeCount}`).setValues([taskValues[i]]);
-      situationArrangementSheet.insertRowAfter(6 + (i - 1) - expiredCount - completeCount);
+      let notStartTaskPosition = 6 + (i - 1) - expiredCount - completeCount;
+      situationArrangementSheet.getRange(`A${notStartTaskPosition}:D${notStartTaskPosition}`).setValues([taskValues[i]]);
+      situationArrangementSheet.insertRowAfter(notStartTaskPosition);
       notStartCount++
     }
     if (taskValues[i][2] == '仕掛中') {
-      situationArrangementSheet.getRange(`A${3 + (i - 1) - expiredCount - completeCount - notStartCount}:D${3 + (i - 1) - expiredCount - completeCount - notStartCount}`).setValues([taskValues[i]]);
-      situationArrangementSheet.insertRowAfter(3 + (i - 1) - expiredCount - completeCount - notStartCount);
+      let inProcessTaskPosition = 3 + (i - 1) - expiredCount - completeCount - notStartCount;
+      situationArrangementSheet.getRange(`A${inProcessTaskPosition}:D${inProcessTaskPosition}`).setValues([taskValues[i]]);
+      situationArrangementSheet.insertRowAfter(inProcessTaskPosition);
     }
   }
 }
