@@ -19,15 +19,15 @@ function onOpen(e) {
 }
 
 function menuSituationalAnalysis() {
-  let mySpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-  let templateSheet = mySpreadsheet.getSheetByName('状況分析_template');
-  let copySheet = templateSheet.copyTo(mySpreadsheet);
+  const mySpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  const templateSheet = mySpreadsheet.getSheetByName('状況分析_template');
+  const copySheet = templateSheet.copyTo(mySpreadsheet);
 
-  let today = new Date();
+  const today = new Date();
   copySheet.setName(`状況整理_${dateToStr24HPad0(today)}`);
 
-  let taskSheet = mySpreadsheet.getSheetByName('タスク一覧');
-  let taskValues = taskSheet.getDataRange().getValues();
+  const taskSheet = mySpreadsheet.getSheetByName('タスク一覧');
+  const taskValues = taskSheet.getDataRange().getValues();
   
   let taskDate = 0;
   
@@ -57,7 +57,7 @@ function menuSituationalAnalysis() {
 }
 
 function dateToStr24HPad0(date) {
-  let str = date.getFullYear()
+  const str = date.getFullYear()
     + ('0' + (date.getMonth() + 1)).slice(-2)
     + ('0' + date.getDate()).slice(-2)
     + ('0' + date.getHours()).slice(-2)
