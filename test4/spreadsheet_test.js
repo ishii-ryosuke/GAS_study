@@ -20,15 +20,27 @@ function onOpen(e) {
 
 function menuSituationalAnalysis() {
   const mySpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-  const templateSheet = mySpreadsheet.getSheetByName('状況分析_template');
-  const copySheet = templateSheet.copyTo(mySpreadsheet);
+  const situationArrangementSheet = makeSituationArrangementSheet(mySpreadsheet);
+  const taskValues = getTaskValues(mySpreadsheet);
+  taskAdjustment(situationArrangementSheet, taskValues);
+}
 
-  const today = new Date();
-  copySheet.setName(`状況整理_${dateToStr24HPad0(today)}`);
-
+function getTaskValues(mySpreadsheet) {
   const taskSheet = mySpreadsheet.getSheetByName('タスク一覧');
   const taskValues = taskSheet.getDataRange().getValues();
-  
+
+  return taskValues;
+}
+
+function makeSituationArrangementSheet(mySpreadsheet) {
+  const templateSheet = mySpreadsheet.getSheetByName('状況分析_template');
+  const copySheet = templateSheet.copyTo(mySpreadsheet);
+  copySheet.setName(`状況整理_${dateToStr24HPad0(new Date())}`);
+
+  return copySheet;
+}
+
+function taskAdjustment(situationArrangementSheet, taskValues) {
   let taskDate = 0;
   
   let expiredFlag = 0;
@@ -36,8 +48,8 @@ function menuSituationalAnalysis() {
   let notStartFlag = 0;
   for (let i = 1; i < taskValues.length; i++) {
     taskDate = new Date(taskValues[i][3]);
-    if (taskDate.getTime() < today.getTime()) {
-      copySheet.getRange(`A${9 + (i - 1)}:D${9 + (i - 1)}`).setValues([taskValues[i]]);
+    if (taskDate.getTime() < new Date().getTime()) {
+      situationArrangementSheet.getRange(`A${9 + (i - 1)}:D${9 + (i - 1)}`).setValues([taskValues[i]]);
       expiredFlag++;
       continue;
     }
@@ -45,13 +57,13 @@ function menuSituationalAnalysis() {
       completeFlag++;
     }
     if (taskValues[i][2] == '未着手') {
-      copySheet.getRange(`A${6 + (i - 1) - expiredFlag - completeFlag}:D${6 + (i - 1) - expiredFlag - completeFlag}`).setValues([taskValues[i]]);
-      copySheet.insertRowAfter(6 + (i - 1) - expiredFlag - completeFlag);
+      situationArrangementSheet.getRange(`A${6 + (i - 1) - expiredFlag - completeFlag}:D${6 + (i - 1) - expiredFlag - completeFlag}`).setValues([taskValues[i]]);
+      situationArrangementSheet.insertRowAfter(6 + (i - 1) - expiredFlag - completeFlag);
       notStartFlag++
     }
     if (taskValues[i][2] == '仕掛中') {
-      copySheet.getRange(`A${3 + (i - 1) - expiredFlag - completeFlag - notStartFlag}:D${3 + (i - 1) - expiredFlag - completeFlag - notStartFlag}`).setValues([taskValues[i]]);
-      copySheet.insertRowAfter(3 + (i - 1) - expiredFlag - completeFlag - notStartFlag);
+      situationArrangementSheet.getRange(`A${3 + (i - 1) - expiredFlag - completeFlag - notStartFlag}:D${3 + (i - 1) - expiredFlag - completeFlag - notStartFlag}`).setValues([taskValues[i]]);
+      situationArrangementSheet.insertRowAfter(3 + (i - 1) - expiredFlag - completeFlag - notStartFlag);
     }
   }
 }
