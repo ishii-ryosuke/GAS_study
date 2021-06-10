@@ -41,29 +41,28 @@ function makeSituationArrangementSheet(mySpreadsheet) {
 }
 
 function taskAdjustment(situationArrangementSheet, taskValues) {
-  let taskDate = 0;
-  
-  let expiredFlag = 0;
-  let completeFlag = 0;
-  let notStartFlag = 0;
+  let expiredCount = 0;
+  let completeCount = 0;
+  let notStartCount = 0;
   for (let i = 1; i < taskValues.length; i++) {
+    let taskDate = 0;
     taskDate = new Date(taskValues[i][3]);
     if (taskDate.getTime() < new Date().getTime()) {
       situationArrangementSheet.getRange(`A${9 + (i - 1)}:D${9 + (i - 1)}`).setValues([taskValues[i]]);
-      expiredFlag++;
+      expiredCount++;
       continue;
     }
     if (taskValues[i][2] == '完了') {
-      completeFlag++;
+      completeCount++;
     }
     if (taskValues[i][2] == '未着手') {
-      situationArrangementSheet.getRange(`A${6 + (i - 1) - expiredFlag - completeFlag}:D${6 + (i - 1) - expiredFlag - completeFlag}`).setValues([taskValues[i]]);
-      situationArrangementSheet.insertRowAfter(6 + (i - 1) - expiredFlag - completeFlag);
-      notStartFlag++
+      situationArrangementSheet.getRange(`A${6 + (i - 1) - expiredCount - completeCount}:D${6 + (i - 1) - expiredCount - completeCount}`).setValues([taskValues[i]]);
+      situationArrangementSheet.insertRowAfter(6 + (i - 1) - expiredCount - completeCount);
+      notStartCount++
     }
     if (taskValues[i][2] == '仕掛中') {
-      situationArrangementSheet.getRange(`A${3 + (i - 1) - expiredFlag - completeFlag - notStartFlag}:D${3 + (i - 1) - expiredFlag - completeFlag - notStartFlag}`).setValues([taskValues[i]]);
-      situationArrangementSheet.insertRowAfter(3 + (i - 1) - expiredFlag - completeFlag - notStartFlag);
+      situationArrangementSheet.getRange(`A${3 + (i - 1) - expiredCount - completeCount - notStartCount}:D${3 + (i - 1) - expiredCount - completeCount - notStartCount}`).setValues([taskValues[i]]);
+      situationArrangementSheet.insertRowAfter(3 + (i - 1) - expiredCount - completeCount - notStartCount);
     }
   }
 }
