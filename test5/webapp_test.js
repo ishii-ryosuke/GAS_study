@@ -8,10 +8,7 @@ function doGet(e) {
  * @return {number[][]} タスク一覧の二次元配列
  */ 
 function getTaskList() {
-  const taskManageSpreadSheet = SpreadsheetApp.openById('1tHxL9btVtP7LJWmBqbIyXa3-pxCG3kpOA5aWQFkKfaY');
-  const taskSheet = taskManageSpreadSheet.getSheetByName('タスク一覧');
-  const taskList = taskSheet.getDataRange().getValues();
-  return taskList;
+  return getTaskSheet().getDataRange().getValues();;
 }
 
 /**
