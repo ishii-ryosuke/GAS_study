@@ -27,7 +27,7 @@ function getTaskToWebApp() {
 function getSortTaskList(taskList) {
   // ステータス「完了」のタスクを取り除く
   taskList = taskList.filter(function(task) {
-    return task[2] != '完了';
+    return task[2] !== '完了';
   });
   // タスクをソートする
   taskSort(taskList);
