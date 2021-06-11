@@ -1,20 +1,20 @@
 function doGet(e) {
-  let template = HtmlService.createTemplateFromFile('test5/task_manage_app');
+  const template = HtmlService.createTemplateFromFile('test5/task_manage_app');
   return template.evaluate();
 }
 
 // タスク一覧を取得
 function getTaskList() {
-  let taskManageSpreadSheet = SpreadsheetApp.openById('1tHxL9btVtP7LJWmBqbIyXa3-pxCG3kpOA5aWQFkKfaY');
-  let taskSheet = taskManageSpreadSheet.getSheetByName('タスク一覧');
-  let taskList = taskSheet.getDataRange().getValues();
+  const taskManageSpreadSheet = SpreadsheetApp.openById('1tHxL9btVtP7LJWmBqbIyXa3-pxCG3kpOA5aWQFkKfaY');
+  const taskSheet = taskManageSpreadSheet.getSheetByName('タスク一覧');
+  const taskList = taskSheet.getDataRange().getValues();
   return taskList;
 }
 
 // 「タスク一覧」シートを取得
 function getTaskSheet() {
-  let taskManageSpreadSheet = SpreadsheetApp.openById('1tHxL9btVtP7LJWmBqbIyXa3-pxCG3kpOA5aWQFkKfaY');
-  let taskSheet = taskManageSpreadSheet.getSheetByName('タスク一覧');
+  const taskManageSpreadSheet = SpreadsheetApp.openById('1tHxL9btVtP7LJWmBqbIyXa3-pxCG3kpOA5aWQFkKfaY');
+  const taskSheet = taskManageSpreadSheet.getSheetByName('タスク一覧');
   return taskSheet;
 }
 
@@ -41,7 +41,7 @@ function taskSort(array) {
     for (let j = array.length - 1; i < j; j--) {
       // ますは日付をチェックする
       if (taskDateCheck(array[j], array[j - 1])) {
-        let tmp = array[j - 1];
+        const tmp = array[j - 1];
         array[j - 1] = array[j];
         array[j] = tmp;
       } 
@@ -51,8 +51,8 @@ function taskSort(array) {
 
  // 配列で後ろのタスクの日付が、前のタスクより古かった場合、trueを返す（入れ替える）
 function taskDateCheck(taskBack, taskFront) {
-  let taskBackDate = taskBack[3].getTime();
-  let taskFrontDate = taskFront[3].getTime();
+  const taskBackDate = taskBack[3].getTime();
+  const taskFrontDate = taskFront[3].getTime();
   if(taskBackDate < taskFrontDate) {
     return true;
   } else if (taskBackDate === taskFrontDate) {
@@ -84,7 +84,7 @@ function taskIndexCheck(taskBack, taskFront) {
 // 日付のフォーマット
 function taskDateFormat(array) {
   for (let i = 1; i < array.length; i++) {
-    let str = array[i][3].getFullYear()
+    const str = array[i][3].getFullYear()
     + '/' + ('0' + (array[i][3].getMonth() + 1)).slice(-2)
     + '/' + ('0' + array[i][3].getDate()).slice(-2);
     array[i][3] = str;
@@ -93,16 +93,16 @@ function taskDateFormat(array) {
 
 // 画面で入力されたタスクをスプレッドシートに記録する
 function setTaskFromWebApp(taskContents, taskDeadline) {
-  let taskList = getTaskList(); 
-  let newTask = [taskList[taskList.length - 1][0] + 1, taskContents, '未着手', taskDeadline];
+  const taskList = getTaskList(); 
+  const newTask = [taskList[taskList.length - 1][0] + 1, taskContents, '未着手', taskDeadline];
   getTaskSheet().getRange(`A${taskList.length + 1}:D${taskList.length + 1}`).setValues([newTask]);
   return getSortTaskList(getTaskList());
 }
 
 // 指定したタスクのステータスを変更する
 function setTaskStatus(taskListIndexFromWebApp, taskStatus) {
-  let taskList = getSortTaskList(getTaskList()); 
-  let taskListIndex = taskList[taskListIndexFromWebApp][0];
+  const taskList = getSortTaskList(getTaskList()); 
+  const taskListIndex = taskList[taskListIndexFromWebApp][0];
   getTaskSheet().getRange(`C${taskListIndex + 1}`).setValue(taskStatus);
   return getSortTaskList(getTaskList());
 }
