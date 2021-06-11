@@ -55,7 +55,7 @@ function taskDateCheck(taskBack, taskFront) {
   let taskFrontDate = taskFront[3].getTime();
   if(taskBackDate < taskFrontDate) {
     return true;
-  } else if (taskBackDate == taskFrontDate) {
+  } else if (taskBackDate === taskFrontDate) {
     // 日付が同じ場合、ステータスをチェックする
     return taskStatusCheck(taskBack, taskFront);
   }
@@ -64,9 +64,9 @@ function taskDateCheck(taskBack, taskFront) {
 
 // 後ろのタスクのステータスが「仕掛中」で、前のタスクが「未着手」の場合、trueを返す（入れ替える）
 function taskStatusCheck(taskBack, taskFront) {
-  if(taskBack[2] == '仕掛中' && taskFront[2] == '未着手') {
+  if(taskBack[2] === '仕掛中' && taskFront[2] === '未着手') {
     return true;
-  } else if (taskBack[2] == taskFront[2]) {
+  } else if (taskBack[2] === taskFront[2]) {
     // ステータスが同じ場合、No.をチェックする
     return taskIndexCheck(taskBack, taskFront);
   }

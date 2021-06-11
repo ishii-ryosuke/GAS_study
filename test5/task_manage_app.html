@@ -12,7 +12,7 @@
         for (let i = 0; i < data.length; i++) {
           rows.push(table.insertRow(-1)); 
           for(let j = 0; j < data[0].length; j++) {
-            if (i == 0) {
+            if (i === 0) {
               let thObject = document.createElement('th');
               thObject.innerHTML = data[i][j];
               rows[i].appendChild(thObject);
@@ -21,15 +21,15 @@
               cell.appendChild(document.createTextNode(data[i][j]));  
             }           
           }
-          if (i == 0) {
+          if (i === 0) {
             let thObject = document.createElement('th');
             thObject.innerHTML = '処理';
             rows[i].appendChild(thObject); 
           } else {
-            if (data[i][2] == '仕掛中') {
+            if (data[i][2] === '仕掛中') {
               let cell=rows[i].insertCell(-1);
               cell.innerHTML = `<input data-index=${i} data-status='完了' type="button" class="btn btn--red" value="完了" onclick="taskStatusChange(event)">`; 
-            } else if (data[i][2] == '未着手') {
+            } else if (data[i][2] === '未着手') {
               let cell=rows[i].insertCell(-1);
               cell.innerHTML = `<input data-index=${i} data-status='仕掛中' type="button" class="btn btn--yellow" value="着手" onclick="taskStatusChange(event)">`;
             }
@@ -58,11 +58,11 @@
         const deadlineTextBox = document.getElementById('deadlineText');
         const deadlineText = deadlineTextBox.value;
   
-        if (contentsText == '' && deadlineText != '') {
+        if (contentsText === '' && deadlineText !== '') {
           alert('内容が未入力です。');
-        } else if (contentsText != '' && deadlineText == '') {
+        } else if (contentsText !== '' && deadlineText === '') {
           alert('期限日が未入力です。');
-        } else if (contentsText == '' && deadlineText == '') {
+        } else if (contentsText === '' && deadlineText === '') {
           alert('内容と期限日が未入力です。');
         } else {
           google.script.run.withSuccessHandler(makeTable).setTaskFromWebApp(contentsText, deadlineText);
