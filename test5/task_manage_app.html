@@ -6,7 +6,7 @@
     <script>
       function makeTable(data){
         const taskTable = document.getElementById('taskTable');
-        const rows=[];
+        const rows = [];
         const table = document.createElement('table');
 
         for (let i = 0; i < data.length; i++) {
@@ -17,7 +17,7 @@
               thObject.innerHTML = data[i][j];
               rows[i].appendChild(thObject);
             } else {
-              const cell=rows[i].insertCell(-1);
+              const cell = rows[i].insertCell(-1);
               cell.appendChild(document.createTextNode(data[i][j]));  
             }           
           }
@@ -27,10 +27,10 @@
             rows[i].appendChild(thObject); 
           } else {
             if (data[i][2] === '仕掛中') {
-              const cell=rows[i].insertCell(-1);
+              const cell = rows[i].insertCell(-1);
               cell.innerHTML = `<input data-index=${i} data-status='完了' type="button" class="btn btn--red" value="完了" onclick="taskStatusChange(event)">`; 
             } else if (data[i][2] === '未着手') {
-              const cell=rows[i].insertCell(-1);
+              const cell = rows[i].insertCell(-1);
               cell.innerHTML = `<input data-index=${i} data-status='仕掛中' type="button" class="btn btn--yellow" value="着手" onclick="taskStatusChange(event)">`;
             }
           }
