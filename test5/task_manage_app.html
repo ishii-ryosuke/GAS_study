@@ -45,11 +45,15 @@
       }
 
       window.onload = function(){ 
-        google.script.run.withSuccessHandler(makeTable).getTaskToWebApp();
+        google.script.run.withSuccessHandler(makeTable).withFailureHandler(function() {
+          alert('タスク一覧が取得できませんでした');
+        }).getTaskToWebApp();
       };
   
       function taskStatusChange(e) {
-        google.script.run.withSuccessHandler(makeTable).setTaskStatus(e.currentTarget.dataset['index'], e.currentTarget.dataset['status']);
+        google.script.run.withSuccessHandler(makeTable).withFailureHandler(function() {
+          alert('ステータスの変更に失敗しました');
+        }).setTaskStatus(e.currentTarget.dataset['index'], e.currentTarget.dataset['status']);
       }
   
       function textCheck() {
@@ -65,7 +69,9 @@
         } else if (contentsText === '' && deadlineText === '') {
           alert('内容と期限日が未入力です。');
         } else {
-          google.script.run.withSuccessHandler(makeTable).setTaskFromWebApp(contentsText, deadlineText);
+          google.script.run.withSuccessHandler(makeTable).withFailureHandler(function() {
+          alert('新しいタスクの挿入に失敗しました');
+        }).setTaskFromWebApp(contentsText, deadlineText);
         }
       }
     </script>
