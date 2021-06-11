@@ -4,6 +4,10 @@
     <base target="_top">
     <?!= HtmlService.createHtmlOutputFromFile('test5/css').getContent(); ?>
     <script>
+       /**
+       * タスク一覧のテーブルを作成
+       * @param {number[][]} data - スプレッドシートのタスク一覧
+       */
       function makeTable(data){
         const taskTable = document.getElementById('taskTable');
         const rows = [];
@@ -39,6 +43,9 @@
         taskTable.appendChild(table);
       }
 
+      /**
+       * タスク一覧のテーブルを初期化する
+       */
       function deleteTable() {
         const taskTable = document.getElementById('taskTable');
         taskTable.innerHTML = '';
@@ -49,13 +56,20 @@
           alert('タスク一覧が取得できませんでした');
         }).getTaskToWebApp();
       };
-  
+
+      /**
+       * タスク一覧のテーブルを作成
+       * @param {HTMLElement} e - クリックされたボタンの'index'と'status'を取得するためのもの
+       */
       function taskStatusChange(e) {
         google.script.run.withSuccessHandler(makeTable).withFailureHandler(function() {
           alert('ステータスの変更に失敗しました');
         }).setTaskStatus(e.currentTarget.dataset['index'], e.currentTarget.dataset['status']);
       }
-  
+      
+      /**
+       * 追加するタスクの入力をチェックし、問題なければタスク一覧に追加する
+       */
       function textCheck() {
         const contentsTextBox = document.getElementById('contentsText');
         const contentsText = contentsTextBox.value;

@@ -3,7 +3,10 @@ function doGet(e) {
   return template.evaluate();
 }
 
-// タスク一覧を取得
+/**
+ * タスク一覧を取得
+ * @return {number[][]} タスク一覧の二次元配列
+ */ 
 function getTaskList() {
   const taskManageSpreadSheet = SpreadsheetApp.openById('1tHxL9btVtP7LJWmBqbIyXa3-pxCG3kpOA5aWQFkKfaY');
   const taskSheet = taskManageSpreadSheet.getSheetByName('タスク一覧');
@@ -11,19 +14,29 @@ function getTaskList() {
   return taskList;
 }
 
-// 「タスク一覧」シートを取得
+/**
+ * 「タスク一覧」シートを取得
+ * @return {Sheet} タスク一覧のシート
+ */ 
 function getTaskSheet() {
   const taskManageSpreadSheet = SpreadsheetApp.openById('1tHxL9btVtP7LJWmBqbIyXa3-pxCG3kpOA5aWQFkKfaY');
   const taskSheet = taskManageSpreadSheet.getSheetByName('タスク一覧');
   return taskSheet;
 }
 
-// ソートしたタスク一覧をクライアント側に送信
+/**
+ * ソートしたタスク一覧をクライアント側に送信
+ * @return {number[][]} ソートされたタスク一覧の二次元配列
+ */ 
 function getTaskToWebApp() {
   return getSortTaskList(getTaskList());
 }
 
-// ソートしたタスク一覧を取得
+/**
+ * ソートしたタスク一覧を取得
+ * @param {number[][]} taskList - ソートされていないタスク一覧の二次元配列
+ * @return {number[][]} ソートされたタスク一覧の二次元配列
+ */ 
 function getSortTaskList(taskList) {
   // ステータス「完了」のタスクを取り除く
   taskList = taskList.filter(function(task) {
@@ -35,7 +48,10 @@ function getSortTaskList(taskList) {
   return taskList;
 }
 
-// タスク一覧をソートする関数
+/**
+ * タスク一覧をソートする関数
+ * @param {number[][]} array - ソートされていないタスク一覧の二次元配列
+ */ 
 function taskSort(array) {
   for (let i = 1; i < array.length; i++) {
     for (let j = array.length - 1; i < j; j--) {
@@ -49,7 +65,11 @@ function taskSort(array) {
   }
 }
 
- // 配列で後ろのタスクの日付が、前のタスクより古かった場合、trueを返す（入れ替える）
+ /**
+ * 配列で後ろのタスクの日付が、前のタスクより古かった場合、trueを返す（入れ替える）
+ * @param {number[]} taskBack - 後ろのタスクが格納されている配列
+ * @param {number[]} taskFront - 前のタスクが格納されている配列
+ */ 
 function taskDateCheck(taskBack, taskFront) {
   const taskBackDate = taskBack[3].getTime();
   const taskFrontDate = taskFront[3].getTime();
@@ -62,7 +82,11 @@ function taskDateCheck(taskBack, taskFront) {
   return false;
 }
 
-// 後ろのタスクのステータスが「仕掛中」で、前のタスクが「未着手」の場合、trueを返す（入れ替える）
+ /**
+ * 後ろのタスクのステータスが「仕掛中」で、前のタスクが「未着手」の場合、trueを返す（入れ替える）
+ * @param {number[]} taskBack - 後ろのタスクが格納されている配列
+ * @param {number[]} taskFront - 前のタスクが格納されている配列
+ */ 
 function taskStatusCheck(taskBack, taskFront) {
   if(taskBack[2] === '仕掛中' && taskFront[2] === '未着手') {
     return true;
@@ -73,7 +97,11 @@ function taskStatusCheck(taskBack, taskFront) {
   return false;
 }
 
-// 後ろのタスクのNo.の方が、前のタスクより番号が若かった場合、trueを返す（入れ替える）
+ /**
+ * 後ろのタスクのNo.の方が、前のタスクより番号が若かった場合、trueを返す（入れ替える）
+ * @param {number[]} taskBack - 後ろのタスクが格納されている配列
+ * @param {number[]} taskFront - 前のタスクが格納されている配列
+ */
 function taskIndexCheck(taskBack, taskFront) {
   if (taskBack[0] < taskFront[0]) {
     return true;
@@ -91,15 +119,25 @@ function taskDateFormat(array) {
   }
 }
 
-// 画面で入力されたタスクをスプレッドシートに記録する
+ /**
+ * 画面で入力されたタスクをスプレッドシートに記録する
+ * @param {String} taskContents - 画面で入力されたタスクの内容
+ * @param {number} taskDeadline - 画面で入力されたタスクの期限日
+ * @return {number[][]} 新しいタスクを追加した後、ソートされたタスク一覧の二次元配列
+ */
 function setTaskFromWebApp(taskContents, taskDeadline) {
   const taskList = getTaskList(); 
   const newTask = [taskList[taskList.length - 1][0] + 1, taskContents, '未着手', taskDeadline];
   getTaskSheet().getRange(`A${taskList.length + 1}:D${taskList.length + 1}`).setValues([newTask]);
   return getSortTaskList(getTaskList());
 }
-
-// 指定したタスクのステータスを変更する
+ 
+ /**
+ * 指定したタスクのステータスを変更する
+ * @param {number} taskListIndexFromWebApp - クライアントで表示されているタスク一覧のインデックス
+ * @param {String} taskStatus - 変更後のタスクのステータス
+ * @return {number[][]} タスクのステータスを変更した後、ソートされたタスク一覧の二次元配列
+ */
 function setTaskStatus(taskListIndexFromWebApp, taskStatus) {
   const taskList = getSortTaskList(getTaskList()); 
   const taskListIndex = taskList[taskListIndexFromWebApp][0];
