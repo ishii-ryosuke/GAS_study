@@ -106,13 +106,13 @@ function taskIndexCheck(taskBack, taskFront) {
   return false;
 }
 
-// 日付のフォーマット
+ /**
+ * 日付のフォーマット
+ * @param {number[][]} array - 日付がフォーマットされていないタスク一覧の二次元配列
+ */
 function taskDateFormat(array) {
   for (let i = 1; i < array.length; i++) {
-    const str = array[i][3].getFullYear()
-    + '/' + ('0' + (array[i][3].getMonth() + 1)).slice(-2)
-    + '/' + ('0' + array[i][3].getDate()).slice(-2);
-    array[i][3] = str;
+    array[i][3] = Utilities.formatDate(array[i][3], "JST", "yyyy/MM/dd");
   }
 }
 
