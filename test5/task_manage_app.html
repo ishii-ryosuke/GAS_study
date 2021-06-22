@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <?!= HtmlService.createHtmlOutputFromFile('test5/css').getContent(); ?>
+    <script>
+       /**
+       * タスク一覧のテーブルを作成
+       * @param {number[][]} data - スプレッドシートのタスク一覧
+       */
+      function makeTable(data){
+        const taskTable = document.getElementById('taskTable');
+        const rows = [];
+        const table = document.createElement('table');
+
+        for (let i = 0; i < data.length; i++) {
+          rows.push(table.insertRow(-1)); 
+          for(let j = 0; j < data[0].length; j++) {
+            if (i === 0) {
+              const thObject = document.createElement('th');
+              thObject.innerHTML = data[i][j];
+              rows[i].appendChild(thObject);
+            } else {
+              const cell = rows[i].insertCell(-1);
+              cell.appendChild(document.createTextNode(data[i][j]));  
+            }           
+          }
+          if (i === 0) {
+            const thObject = document.createElement('th');
+            thObject.innerHTML = '処理';
+            rows[i].appendChild(thObject); 
+          } else {
+            if (data[i][2] === '仕掛中') {
+              const cell = rows[i].insertCell(-1);
+              cell.innerHTML = `<input data-index=${i} data-status='完了' type="button" class="btn btn--red" value="完了" onclick="taskStatusChange(event)">`; 
+            } else if (data[i][2] === '未着手') {
+              const cell = rows[i].insertCell(-1);
+              cell.innerHTML = `<input data-index=${i} data-status='仕掛中' type="button" class="btn btn--yellow" value="着手" onclick="taskStatusChange(event)">`;
+            }
+          }
+        }
+        deleteTable();
+        taskTable.appendChild(table);
+      }
+
+      /**
+       * タスク一覧のテーブルを初期化する
+       */
+      function deleteTable() {
+        const taskTable = document.getElementById('taskTable');
+        taskTable.innerHTML = '';
+      }
+
+      window.onload = function(){ 
+        google.script.run.withSuccessHandler(makeTable).withFailureHandler(function() {
+          alert('タスク一覧が取得できませんでした');
+        }).getTaskToWebApp();
+      };
+
+      /**
+       * タスク一覧のテーブルを作成
+       * @param {HTMLElement} e - クリックされたボタンの'index'と'status'を取得するためのもの
+       */
+      function taskStatusChange(e) {
+        google.script.run.withSuccessHandler(makeTable).withFailureHandler(function() {
+          alert('ステータスの変更に失敗しました');
+        }).setTaskStatus(e.currentTarget.dataset['index'], e.currentTarget.dataset['status']);
+      }
+      
+      /**
+       * 追加するタスクの入力をチェックし、問題なければタスク一覧に追加する
+       */
+      function textCheck() {
+        const contentsTextBox = document.getElementById('contentsText');
+        const contentsText = contentsTextBox.value;
+        const deadlineTextBox = document.getElementById('deadlineText');
+        const deadlineText = deadlineTextBox.value;
+  
+        if (contentsText === '' && deadlineText !== '') {
+          alert('内容が未入力です。');
+        } else if (contentsText !== '' && deadlineText === '') {
+          alert('期限日が未入力です。');
+        } else if (contentsText === '' && deadlineText === '') {
+          alert('内容と期限日が未入力です。');
+        } else {
+          google.script.run.withSuccessHandler(makeTable).withFailureHandler(function() {
+          alert('新しいタスクの挿入に失敗しました');
+        }).setTaskFromWebApp(contentsText, deadlineText);
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <h1>タスク管理アプリ</h1>
+    <div><b>新規タスク</b></div>
+    <div>
+      <table id="textTable">
+        <tr>
+          <td>　内容：</td>
+          <td><input type="text" id="contentsText"></td>
+        </tr>
+          <td>期限日：</td>
+          <td><input type="text" id="deadlineText"></td>
+      </table>
+    </div>
+    <div><input type="button" class="btn btn--blue" value="新規追加" onclick="textCheck()"></div>
+    <div><b>既存タスク</b></div>
+    <div><table id="taskTable"></table></div>
+  </body>
+</html>
